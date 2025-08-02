@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from django.urls import reverse
+from taggit.managers import TaggableManager
 
 #custom manager to retrieve all "published" status posts
 class PublishedManager(models.Manager):
@@ -10,7 +11,6 @@ class PublishedManager(models.Manager):
             super().get_queryset().filter(status=Post.Status.PUBLISHED)
         )
     
-
 class Post(models.Model):
     class Status(models.TextChoices): #gives 2 status option
         DRAFT = "DF", "Draft"
@@ -38,6 +38,7 @@ class Post(models.Model):
 
     objects = models.Manager() #default model manager (must be added if using custom manager: says - hey use this, unless its published then use that)
     published = PublishedManager() #custom model manager for "published" posts
+    tags = TaggableManager()
 
     class Meta: #sets the default ordering for query results.
         ordering = ['-publish'] #means descending order by publish date.
